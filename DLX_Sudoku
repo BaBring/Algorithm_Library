@@ -1,0 +1,83 @@
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+inline int Read()
+{
+    int x=0;
+    char c=getchar();
+    while(c<'0' || c>'9') c=getchar();
+    while(c>='0' && c<='9') x=x*10+c-'0',c=getchar();
+    return x;
+}
+
+const int mx=250520;//n*m+m<=250500
+int n,m;
+int cnt;
+int l[mx],r[mx],u[mx],d[mx],col[mx],row[mx];//每个点的左右上下指针，所在行列 
+int h[mx];//每行的头结点 
+int s[mx];//每列的节点数 
+int ansk[mx];//选了哪些行
+
+void init(int nn,int mm){//创建空矩阵
+	for(register int i=0;i<=m;i++){
+		r[i]=i+1;
+		l[i]=i-1;
+		u[i]=d[i]=i;
+	}
+	r[m]=0;
+	l[0]=m;
+	memset(h,-1,sizeof(h));
+	memset(s,0,sizeof(s));
+	cnt=m+1;
+}
+
+void link(int R,int C)
+{
+    s[C]++;
+    row[cnt]=R;
+    col[cnt]=C;
+    
+    //链接上下
+    u[cnt]=C;
+    d[cnt]=d[C];
+    u[d[C]]=cnt;
+    d[C]=cnt;
+    
+    //链接左右
+    if(h[R]<0) h[R]=r[cnt]=l[cnt]=cnt;//是这行第一个
+    else{
+        r[cnt]=h[R];
+        l[cnt]=l[h[R]];
+        r[l[h[R]]]=cnt;
+        l[h[R]]=cnt;
+    }
+    cnt++;
+}
+
+void remove(int c)//删除c列和c列上所有带点的行
+{
+    
+}
+
+int main()
+{
+    init(729,324);
+    int x,o;
+    for(int i=0;i<9;i++){
+        for(int j=0;j<9;j++){
+            a[i][j]=x=Read();
+            for(int k=1;k<=9;k++){//根据对应关系填表
+                if(x == 0 || x == k){
+                    o=i*9*9+j*9+k;//行
+                    link(o,81*0+i*9+j+1);//约束1列
+                    link(o,81*1+i*9+k);//约束2列
+                    link(o,81*2+j*9+k);//约束3列
+                    link(o,81*3+(i/3*3+j/3)*9+k);//约束4列
+                }
+            }
+        }
+    }
+    dance(0);
+    return 0;
+}
